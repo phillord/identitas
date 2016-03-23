@@ -1,5 +1,6 @@
 (ns proquint.core
-  (:require [clojure.string]))
+  (:require [clojure.string]
+            [proquint.damm]))
 
 (def uint2consonant
   '[\b \d \f \g \h \j \k \l
@@ -48,7 +49,7 @@
   {\a 0, \i 1, \o 2, \u 3})
 
 
-(defn ^:private quint2int-1
+(defn ^:private quint2uint-1
   ([s acc]
    (if (seq s)
      (if-let [add (get consonant2uint (first s))]
@@ -61,4 +62,26 @@
      acc)))
 
 (defn quint2uint [s]
-  (quint2int-1 s 0))
+  (quint2uint-1 s 0))
+
+(defn random-proquint
+  ([]
+   (random-proquint "-"))
+  ([sep]
+   (uint2quint (rand-int Integer/MAX_VALUE) sep)))
+
+(def max-val-by-10
+  (unchecked-divide-int
+   Integer/MAX_VALUE 10))
+
+(defn random-damm-proquint
+  ([]
+   (random-damm-proquint "-"))
+  ([sep]
+   (uint2quint
+    (proquint.damm/add-check
+     (rand-int max-val-by-10)) sep)))
+
+(defn damm-valid? [ident]
+  (proquint.damm/valid?
+   (quint2uint ident)))
