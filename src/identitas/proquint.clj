@@ -1,87 +1,120 @@
-(ns proquint.core
+(ns
+    ^{:doc "Bi-directional Transformation between numbers and a pronouncable
+equivalent."
+      :author "Phillip Lord"}
+    identitas.core
   (:require [clojure.string]
-            [proquint.damm]))
+            [identitas.util]
+            ))
 
-(def uint2consonant
+(def ^:private int-to-consonant
   '[\b \d \f \g \h \j \k \l
     \m \n \p \r \s \t \v \z])
 
-(def uint2vowel
+(def ^:private int-to-vowel
   '[\a \i \o \u])
 
-(def mask-4 0xF0000000)
-(def mask-2 0xC0000000)
+(def ^:private mask-4 0xF0000000)
+(def ^:private mask-2 0xC0000000)
 
-(defn ^:private uint-shift [i mask left-shift right-shift]
+(defn ^:private int-shift [i mask left-shift right-shift]
   (let [j (bit-and i mask-4)
         i (bit-shift-left i left-shift)
         j (unsigned-bit-shift-right j right-shift)]
     [i j]))
 
-(defn uint2quint-1 [i]
-  (let [[i1 j1] (uint-shift i  mask-4 4 28)
-        [i2 j2] (uint-shift i1 mask-2 2 30)
-        [i3 j3] (uint-shift i2 mask-4 4 28)
-        [i4 j4] (uint-shift i3 mask-2 2 30)
-        [i5 j5] (uint-shift i4 mask-4 4 28)]
+(defn ^:private int-to-proint-1 [i]
+  (let [[i1 j1] (int-shift i  mask-4 4 28)
+        [i2 j2] (int-shift i1 mask-2 2 30)
+        [i3 j3] (int-shift i2 mask-4 4 28)
+        [i4 j4] (int-shift i3 mask-2 2 30)
+        [i5 j5] (int-shift i4 mask-4 4 28)]
     [i5
      (str
-      (nth uint2consonant j1)
-      (nth uint2vowel j2)
-      (nth uint2consonant j3)
-      (nth uint2vowel j4)
-      (nth uint2consonant j5))]))
+      (nth int-to-consonant j1)
+      (nth int-to-vowel j2)
+      (nth int-to-consonant j3)
+      (nth int-to-vowel j4)
+      (nth int-to-consonant j5))]))
 
-(defn uint2quint [i sep]
-  (let [[i1 j1]
-        (uint2quint-1 i)
-        [_ j2]
-        (uint2quint-1 i1)]
-    (str j1 sep j2)))
-
-(def consonant2uint
+(def ^:private consonant-to-int
   {\b 0, \d 1, \f 2, \g 3,
    \h 4, \j 5, \k 6, \l 7,
    \m 8, \n 9, \p 10, \r 11,
    \s 12, \t 13, \v 14, \z 15})
 
-(def vowel2uint
+(def ^:private vowel-to-int
   {\a 0, \i 1, \o 2, \u 3})
 
 
-(defn ^:private quint2uint-1
+(defn ^:private proint-to-int-1
   ([s acc]
    (if (seq s)
-     (if-let [add (get consonant2uint (first s))]
+     (if-let [add (get consonant-to-int (first s))]
        (recur (rest s)
               (+ (bit-shift-left acc 4) add))
-       (if-let [add (get vowel2uint (first s))]
+       (if-let [add (get vowel-to-int (first s))]
          (recur (rest s)
                 (+ (bit-shift-left acc 2) add))
          (recur (rest s) acc)))
      acc)))
 
-(defn quint2uint [s]
-  (quint2uint-1 s 0))
 
-(defn random-proquint
+;; * Public Interface
+
+
+;; ** Conversion from and to numbers
+
+(defn int-to-proint [i sep]
+  (let [[i1 j1]
+        (int-to-proint-1 i)
+        [_ j2]
+        (int-to-proint-1 i1)]
+    (str j1 sep j2)))
+
+(defn proint-to-int [p]
+  (proint-to-int-1 p 0))
+
+(defn short-to-proshort
+  "Returns a short proquint."
+  [s]
+  ;; add pre condition that i is less than max value?
+  (let [[j1 j2]
+        (clojure.string/split s)]
+    j1))
+
+(defn long-to-prolong
+  ([l]
+   (long-to-prolong l "-"))
+  ([l sep]
+   (let [[i-big-end i-little-end]
+         (identitas.util/long-to-integer l)]
+     (str (int-to-proint i-big-end sep)
+          sep
+          (int-to-proint i-little-end sep)))))
+
+(defn prolong-to-long [p]
+  (let [[p1 p2 p3 p4]
+        (clojure.string/split p)]
+    (identitas.util/integer-to-long
+     [(proint-to-int (str p1 "-" p2))
+      (proint-to-int (str p3 "-" p4))])))
+
+
+;; ** Random Identifiers
+
+(defn random-proshort
   ([]
-   (random-proquint "-"))
-  ([sep]
-   (uint2quint (rand-int Integer/MAX_VALUE) sep)))
+   (short-to-proshort (rand-int Short/MIN_VALUE Short/MAX_VALUE))))
 
-(def max-val-by-10
-  (unchecked-divide-int
-   Integer/MAX_VALUE 10))
-
-(defn random-damm-proquint
+(defn random-proint
   ([]
-   (random-damm-proquint "-"))
+   (random-proint "-"))
   ([sep]
-   (uint2quint
-    (proquint.damm/add-check
-     (rand-int max-val-by-10)) sep)))
+   (int-to-proint (rand-int Integer/MIN_VALUE Integer/MAX_VALUE) sep)))
 
-(defn damm-valid? [ident]
-  (proquint.damm/valid?
-   (quint2uint ident)))
+(defn random-prolong
+  ([]
+   (random-long-proint "-"))
+  ([sep]
+   (long-to-prolong (rand Long/MIN_VALUE Long/MAX_VALUE) sep)))

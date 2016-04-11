@@ -1,4 +1,7 @@
-(ns proquint.damm)
+(ns
+    ^{:doc "Validate integers with a check-digit according to the Damm algorithm."
+      :author "Phillip Lord"}
+    identitas.damm)
 
 
 ;; https://en.wikipedia.org/wiki/Damm_algorithm
@@ -51,4 +54,3 @@
 (defn valid? [number]
   (zero?
    (check-digit number)))
-
