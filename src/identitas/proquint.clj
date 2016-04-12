@@ -4,7 +4,7 @@ equivalent."
       :author "Phillip Lord"}
     identitas.core
   (:require [clojure.string]
-            [identitas.util]
+            [identitas.util :as u]
             ))
 
 (def ^:private int-to-consonant
@@ -78,17 +78,26 @@ equivalent."
 (defn short-to-proshort
   "Returns a short proquint."
   [s]
-  ;; add pre condition that i is less than max value?
-  (let [[j1 j2]
-        (clojure.string/split s)]
-    j1))
+  (let [[h l] (u/integer-to-short s)]
+    (when (not (= 0 h))
+      (throw (IllegalArgumentException. (str "Value too large: " s))))
+    (let [[j1 j2]
+          (clojure.string/split
+           (int-to-proint s " ")
+           #"\s+")]
+      j2)))
+
+(defn proshort-to-short
+  "Returns a short given a short proquint."
+  [p]
+  (proint-to-int (str "babab-" p)))
 
 (defn long-to-prolong
   ([l]
    (long-to-prolong l "-"))
   ([l sep]
    (let [[i-big-end i-little-end]
-         (identitas.util/long-to-integer l)]
+         (u/long-to-integer l)]
      (str (int-to-proint i-big-end sep)
           sep
           (int-to-proint i-little-end sep)))))
@@ -96,7 +105,7 @@ equivalent."
 (defn prolong-to-long [p]
   (let [[p1 p2 p3 p4]
         (clojure.string/split p)]
-    (identitas.util/integer-to-long
+    (u/integer-to-long
      [(proint-to-int (str p1 "-" p2))
       (proint-to-int (str p3 "-" p4))])))
 
@@ -115,6 +124,6 @@ equivalent."
 
 (defn random-prolong
   ([]
-   (random-long-proint "-"))
+   (random-prolong "-"))
   ([sep]
    (long-to-prolong (rand Long/MIN_VALUE Long/MAX_VALUE) sep)))

@@ -9,8 +9,9 @@
 
 i should be an integer. The return value is the big end and little end of
 the integer respectively."
-  [i])
-
+  [i]
+  [(bit-shift-right i 16)
+   (unchecked-short i)])
 
 (defn short-to-integer
   "Given a tuple of shorts return an int.
@@ -18,9 +19,10 @@ the integer respectively."
 s should be a two element list, each of two shorts representing the big and
   little end of the return value respectively. "
   [s]
-  {:pre (every? #(and
-                  (> % Short/MIN_VALUE)
-                  (< % Short/MAX_VALUE)) s)})
+  (let [[h l] s]
+    (bit-or
+     (bit-shift-left h 16)
+     (bit-and l 0xFFFF))))
 
 (defn long-to-integer
   "Given a long return a tuple of ints.
@@ -38,8 +40,6 @@ i should be a two element list, of two integers representing the big and
 little end of the return value respectively."
   [i]
   (let [[h l] i]
-    (bit-and
+    (bit-or
      (bit-shift-left h 32)
-     (bit-or l 0xFFFFFFFF))))
-
-
+     (bit-and l 0xFFFFFFFF))))
