@@ -65,12 +65,19 @@ equivalent."
 
 ;; ** Conversion from and to numbers
 
-(defn int-to-proint [i sep]
-  (let [[i1 j1]
-        (int-to-proint-1 i)
-        [_ j2]
-        (int-to-proint-1 i1)]
-    (str j1 sep j2)))
+(defn int-to-proint
+  ([i]
+   (int-to-proint i "-"))
+  ([i sep]
+   (when (not (and (<= Integer/MIN_VALUE i)
+                   (>= Integer/MAX_VALUE i)))
+     (throw (IllegalArgumentException.
+             (str "Number out of range: " i))))
+   (let [[i1 j1]
+         (int-to-proint-1 i)
+         [_ j2]
+         (int-to-proint-1 i1)]
+     (str j1 sep j2))))
 
 (defn proint-to-int [p]
   (proint-to-int-1 p 0))
