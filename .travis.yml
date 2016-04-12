@@ -1,0 +1,8 @@
+language: clojure
+sudo: no
+lein: lein2
+script:
+  - lein test
+notifications:
+  email:
+   - travis@russet.org.uk
