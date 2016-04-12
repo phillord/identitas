@@ -1,17 +1,19 @@
-(ns identitas.core)
+(ns identitas.core
+  (:require [identitas.proquint :as p]
+            [identitas.damm :as d]))
 
-(def max-val-by-10
+(def ^{:private true} max-val-by-10
   (unchecked-divide-int
    Integer/MAX_VALUE 10))
 
-(defn random-damm-proquint
+(defn random-damm-proint
   ([]
-   (random-damm-proquint "-"))
+   (random-damm-proint "-"))
   ([sep]
-   (uint2quint
-    (proquint.damm/add-check
+   (p/int-to-proint
+    (d/add-check
      (rand-int max-val-by-10)) sep)))
 
-(defn proquint-damm-valid? [ident]
-  (proquint.damm/valid?
-   (quint2uint ident)))
+(defn proint-damm-valid? [ident]
+  (d/valid?
+   (proint-to-int ident)))

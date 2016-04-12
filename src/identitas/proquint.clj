@@ -2,7 +2,7 @@
     ^{:doc "Bi-directional Transformation between numbers and a pronouncable
 equivalent."
       :author "Phillip Lord"}
-    identitas.core
+    identitas.proquint
   (:require [clojure.string]
             [identitas.util :as u]
             ))
