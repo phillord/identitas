@@ -3,6 +3,23 @@
             [clojure.test :refer :all]))
 
 
+(deftest long-prolong-conversions
+  (is
+   (=
+    ["mabab-babab-babab-babab" "babab-babab-babab-babab"
+     "luzuz-zuzuz-zuzuz-zuzuz"]
+    (map p/long-to-prolong [Long/MIN_VALUE 0 Long/MAX_VALUE])))
+
+  (is
+   (thrown?
+    IllegalArgumentException
+    (p/long-to-prolong (+' 1 Long/MAX_VALUE))))
+
+  (is
+   (thrown?
+    IllegalArgumentException
+    (p/long-to-prolong (-' 1 Long/MIN_VALUE)))))
+
 (deftest int-proint-conversions
   (is
    (=
