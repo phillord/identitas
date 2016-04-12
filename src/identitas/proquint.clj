@@ -95,7 +95,10 @@ equivalent."
       j2)))
 
 (defn proshort-to-short
-  "Returns a short given a short proquint."
+  "Returns a short given a short proquint.
+
+The JVM does not actually have a short datatype, so by short, we mean a number
+between 0 and 65535."
   [p]
   (proint-to-int (str "babab-" p)))
 
