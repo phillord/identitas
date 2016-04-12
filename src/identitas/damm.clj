@@ -22,8 +22,7 @@
    [2, 5, 8, 1, 4, 3, 6, 7, 9, 0]
    ])
 
-
-(defn listify
+(defn- listify
   "Convert a number into a list of digits."
   [number]
   (loop [lst '()
