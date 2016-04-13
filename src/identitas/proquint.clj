@@ -124,13 +124,13 @@ between 0 and 65535."
 
 (defn random-proshort
   ([]
-   (short-to-proshort (rand-int Short/MIN_VALUE Short/MAX_VALUE))))
+   (short-to-proshort (rand 65535))))
 
 (defn random-proint
   ([]
    (random-proint "-"))
   ([sep]
-   (int-to-proint (rand-int Integer/MIN_VALUE Integer/MAX_VALUE) sep)))
+   (int-to-proint (rand Integer/MIN_VALUE Integer/MAX_VALUE) sep)))
 
 (defn random-prolong
   ([]
