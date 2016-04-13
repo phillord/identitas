@@ -13,7 +13,6 @@ Identifier schemes can have many different characteristics, many of which
 conflict. A good identifier scheme, therefore, is one that makes the correct
 compromises for the requirements.
 
-
 Identitas provides the following functionality:
 
  - proquint: functions to convert between numbers and an equivalent
@@ -24,7 +23,28 @@ Identitas provides the following functionality:
 
 ## Usage
 
-It's a bit of a work in progress at the moment, so please read the code!
+### Proquint
+
+Proquint are a transformation from numbers to a more pronounceable form.
+
+    (identitas.proquint/int-to-proint 0)
+    ;; => "babab-babab"
+
+    (identitas.proquint/int-to-proint Integer/MAX_INTEGER)
+    ;; => "luzuz-zuzuz"
+
+
+As an extension to original algorithm, we also provide support short and long
+transformations, useful depending on the size of identifier space required.
+
+    (identitas.proquint/short-to-proshort 0)
+    ;; => "babab"
+
+    (identitas.proquint/long-to-prolong 0)
+    ;; => "babab-babab-babab-babab"
+
+
+
 
 ## License
 
