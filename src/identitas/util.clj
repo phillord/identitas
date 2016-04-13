@@ -43,3 +43,15 @@ little end of the return value respectively."
     (bit-or
      (bit-shift-left h 32)
      (bit-and l 0xFFFFFFFF))))
+
+;; AFAICT, this is the only way which works. Using arithmatic on the output of
+;; clojure.core/rand doesn't work since it can overflow for large ranges. And
+;; even here, I can't work out how to get the range inclusive of `to` because
+;; that involves adding 1 which fails with Long/MAX_VALUE.
+(defn rand-range
+  "Returns a random number between `from` (inclusive) and `to` (exclusive)."
+  [from to]
+  (first
+   (.toArray
+    (.longs (java.util.Random.) 1
+            from to))))
