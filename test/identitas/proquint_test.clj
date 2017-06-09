@@ -51,3 +51,27 @@
    (thrown?
     IllegalArgumentException
     (p/short-to-proshort -1))))
+
+
+(def int-pro-int
+  (comp p/proint-to-int p/int-to-proint))
+
+(defn roundtrip? [f n]
+  (= n (f n)))
+
+(deftest int-round
+  (is
+   (roundtrip? int-pro-int 0))
+
+  (is
+   (roundtrip? int-pro-int 1))
+
+  (is
+   (roundtrip? int-pro-int Integer/MAX_VALUE))
+
+  (is
+   (roundtrip? int-pro-int -1))
+
+  (is
+   (roundtrip? int-pro-int Integer/MIN_VALUE)))
+
