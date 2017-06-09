@@ -16,4 +16,4 @@
 
 (defn proint-damm-valid? [ident]
   (d/valid?
-   (proint-to-int ident)))
+   (p/proint-to-int ident)))
