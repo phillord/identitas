@@ -52,10 +52,14 @@ equivalent."
    (if (seq s)
      (if-let [add (get consonant-to-int (first s))]
        (recur (rest s)
-              (+ (bit-shift-left acc 4) add))
+              (clojure.lang.Numbers/unchecked-int-add
+               (clojure.lang.Numbers/shiftLeftInt acc 4)
+               add))
        (if-let [add (get vowel-to-int (first s))]
          (recur (rest s)
-                (+ (bit-shift-left acc 2) add))
+                (clojure.lang.Numbers/unchecked-int-add
+                 (clojure.lang.Numbers/shiftLeftInt acc 2)
+                 add))
          (recur (rest s) acc)))
      acc)))
 
@@ -80,7 +84,7 @@ equivalent."
      (str j1 sep j2))))
 
 (defn proint-to-int [p]
-  (proint-to-int-1 p 0))
+  (proint-to-int-1 p (int 0)))
 
 (defn short-to-proshort
   "Returns a short proquint."
