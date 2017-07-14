@@ -5,7 +5,7 @@ equivalent."
     identitas.proquint
   (:require [clojure.string]
             [identitas.util :as u]
-            ))
+            [primitive.operator.integer :as i]))
 
 (def ^:private int-to-consonant
   '[\b \d \f \g \h \j \k \l
@@ -14,13 +14,13 @@ equivalent."
 (def ^:private int-to-vowel
   '[\a \i \o \u])
 
-(def ^:private mask-4 0xF0000000)
-(def ^:private mask-2 0xC0000000)
+(def ^:private mask-4 (unchecked-int 0xF0000000))
+(def ^:private mask-2 (unchecked-int 0xC0000000))
 
 (defn ^:private int-shift [i mask left-shift right-shift]
-  (let [j (bit-and i mask-4)
-        i (bit-shift-left i left-shift)
-        j (unsigned-bit-shift-right j right-shift)]
+  (let [j (i/and i mask-4)
+        i (i/left-shift i left-shift)
+        j (i/unsigned-right-shift j right-shift)]
     [i j]))
 
 (defn ^:private int-to-proint-1 [i]
@@ -52,10 +52,10 @@ equivalent."
    (if (seq s)
      (if-let [add (get consonant-to-int (first s))]
        (recur (rest s)
-              (+ (bit-shift-left acc 4) add))
+              (i/+ (i/left-shift acc 4) add))
        (if-let [add (get vowel-to-int (first s))]
          (recur (rest s)
-                (+ (bit-shift-left acc 2) add))
+                (i/+ (i/left-shift acc 2) add))
          (recur (rest s) acc)))
      acc)))
 
