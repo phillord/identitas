@@ -60,6 +60,28 @@ equivalent."
      acc)))
 
 
+(defn check-short [acc]
+  "Limit short output to unsigned Short/MAX (65535) and signed Short/MIN -32768"
+  (when (or (< 65535  acc)
+            (> -32768 acc))
+            (throw (IllegalArgumentException.
+                    (str "Value Too large for short: " acc))))
+  acc)
+
+
+(defn ^:private proshort-to-short-1
+  "Returns short number only"
+          ([s acc]
+           (if (seq s)
+             (if-let [add (get consonant-to-int (first s))]
+               (recur (rest s)
+                      (i/+ (i/left-shift acc 4) add))
+               (if-let [add (get vowel-to-int (first s))]
+                 (recur (rest s)
+                      (i/+ (i/left-shift acc 2) add))
+                 (recur (rest s) acc)))
+             (check-short acc))))
+
 ;; * Public Interface
 
 
@@ -85,14 +107,15 @@ equivalent."
 (defn short-to-proshort
   "Returns a short proquint."
   [s]
-  (let [[h l] (u/integer-to-short s)]
-    (when (not (= 0 h))
-      (throw (IllegalArgumentException. (str "Value too large: " s))))
+  (when (not (and (<= Short/MIN_VALUE s)
+                  (>= Short/MAX_VALUE s)))
+    (throw (IllegalArgumentException.
+            (str "Number out of range for short: " s))))
     (let [[j1 j2]
           (clojure.string/split
            (int-to-proint s " ")
            #"\s+")]
-      j2)))
+      j2))
 
 (defn proshort-to-short
   "Returns a short given a short proquint.
@@ -100,7 +123,7 @@ equivalent."
 The JVM does not actually have a short datatype, so by short, we mean a number
 between 0 and 65535."
   [p]
-  (proint-to-int (str "babab-" p)))
+  (unchecked-short (proshort-to-short-1 p 0)))
 
 (defn long-to-prolong
   ([l]
