@@ -39,18 +39,18 @@
 (deftest short-proshort-conversions
   (is
    (=
-    ["babab" "zuzuz"]
-    (map p/short-to-proshort [0 65535])))
+    ["mabab" "babab" "luzuz"]
+    (map p/short-to-proshort [-32768 0 32767])))
 
   (is
    (thrown?
     IllegalArgumentException
-    (p/short-to-proshort 65536)))
+    (p/short-to-proshort (+ 1 Short/MAX_VALUE))))
 
   (is
    (thrown?
     IllegalArgumentException
-    (p/short-to-proshort -1))))
+    (p/short-to-proshort (- 1 Short/MIN_VALUE)))))
 
 
 (def int-pro-int
