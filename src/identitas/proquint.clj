@@ -149,9 +149,14 @@ between 0 and 65535."
 
 ;; ** Random Identifiers
 
+(defn ranged-rand
+  "Returns random int in range start <= rand < end"
+  [start end]
+  (+ start (int (rand-int (- end start)))))
+
 (defn random-proshort
   ([]
-   (short-to-proshort (rand 65535))))
+   (short-to-proshort (ranged-rand -32768 32767))))
 
 (defn random-proint
   ([]
