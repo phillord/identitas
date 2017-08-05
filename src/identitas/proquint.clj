@@ -127,7 +127,11 @@ between 0 and 65535."
 
 (defn long-to-prolong
   ([l]
-   (long-to-prolong l "-"))
+   (when (not (and (<= Long/MIN_VALUE l)
+                   (>= Long/MAX_VALUE l)))
+     (throw (IllegalArgumentException.
+             (str "Number out of range for Long: " l))))
+  (long-to-prolong l "-"))
   ([l sep]
    (let [[i-big-end i-little-end]
          (u/long-to-integer l)]
@@ -137,7 +141,7 @@ between 0 and 65535."
 
 (defn prolong-to-long [p]
   (let [[p1 p2 p3 p4]
-        (clojure.string/split p)]
+        (clojure.string/split p #"-")]
     (u/integer-to-long
      [(proint-to-int (str p1 "-" p2))
       (proint-to-int (str p3 "-" p4))])))
