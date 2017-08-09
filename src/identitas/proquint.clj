@@ -3,7 +3,7 @@
 equivalent."
       :author "Phillip Lord"}
     identitas.proquint
-  (:require [clojure.string]
+  (:require [clojure.string :as str]
             [identitas.util :as u]
             [primitive.operator.integer :as i]))
 
@@ -101,8 +101,12 @@ equivalent."
          (int-to-proint-1 i1)]
      (str j1 sep j2))))
 
+
+
 (defn proint-to-int [p]
-  (proint-to-int-1 p 0))
+  (let [s (subs (str/lower-case p) 0 11)]
+    (proint-to-int-1 s 0)))
+
 
 (defn short-to-proshort
   "Returns a short proquint."
