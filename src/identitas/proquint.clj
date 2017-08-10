@@ -3,7 +3,7 @@
 equivalent."
       :author "Phillip Lord"}
     identitas.proquint
-  (:require [clojure.string]
+  (:require [clojure.string :as str]
             [identitas.util :as u]
             [primitive.operator.integer :as i]))
 
@@ -140,11 +140,12 @@ between 0 and 65535."
           (int-to-proint i-little-end sep)))))
 
 (defn prolong-to-long [p]
+  (let [s (subs (str/lower-case p) 0 23)] 
   (let [[p1 p2 p3 p4]
-        (clojure.string/split p #"-")]
+        (clojure.string/split s #"-")]
     (u/integer-to-long
      [(proint-to-int (str p1 "-" p2))
-      (proint-to-int (str p3 "-" p4))])))
+      (proint-to-int (str p3 "-" p4))]))))
 
 
 ;; ** Random Identifiers
