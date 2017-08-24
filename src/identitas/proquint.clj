@@ -3,7 +3,7 @@
 equivalent."
       :author "Phillip Lord"}
     identitas.proquint
-  (:require [clojure.string]
+  (:require [clojure.string :as str]
             [identitas.util :as u]
             [primitive.operator.integer :as i]))
 
@@ -101,7 +101,16 @@ equivalent."
          (int-to-proint-1 i1)]
      (str j1 sep j2))))
 
+
+(def illegal-char #{"/" "*" "£" "(" ")" "[" "]" "~" "$" "!" "%" "^" "&"
+                    "+" "=" ";" "#" "?" "_" "'" "." "@" ">" "<" ">>"
+                    "<<" "|" "¬" "," ":" "“" "’" "{" "}" "±" "§" "0" "1"
+                    "2" "3" "4" "5" "6" "7" "8" "9"})
+
 (defn proint-to-int [p]
+  (when (some #(str/includes? p (str %)) illegal-char)
+    (throw (IllegalArgumentException.
+            (str "Not a vlaid entry : " p))))
   (proint-to-int-1 p 0))
 
 (defn short-to-proshort
