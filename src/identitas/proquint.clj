@@ -127,7 +127,8 @@ equivalent."
 The JVM does not actually have a short datatype, so by short, we mean a number
 between 0 and 65535."
   [p]
-  (unchecked-short (proshort-to-short-1 p 0)))
+  (let [s (subs (str/lower-case p) 0 5)]
+  (unchecked-short (proshort-to-short-1 s 0))))
 
 (defn long-to-prolong
   ([l]
