@@ -118,7 +118,7 @@ equivalent."
   (proint-to-int-1 p 0))
 
 (defn short-to-proshort
-  "Returns a short proquint given a short.
+  "Returns a short proquint given a short."
   [s]
   (when (not (and (<= Short/MIN_VALUE s)
                   (>= Short/MAX_VALUE s)))
