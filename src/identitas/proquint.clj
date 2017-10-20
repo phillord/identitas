@@ -133,6 +133,9 @@ equivalent."
 The JVM does not actually have a short datatype, so by short, we mean a number
 between 0 and 65535."
   [p]
+   (when (some #(str/includes? p (str %)) illegal-char)
+    (throw (IllegalArgumentException.
+            (str "Not a vlaid entry : " p))))
   (let [s (subs (str/lower-case p) 0 5)]
   (unchecked-short (proshort-to-short-1 s 0))))
 
@@ -151,6 +154,9 @@ between 0 and 65535."
           (int-to-proint i-little-end sep)))))
 
 (defn prolong-to-long [p]
+  (when (some #(str/includes? p (str %)) illegal-char)
+    (throw (IllegalArgumentException.
+            (str "Not a vlaid entry : " p))))
   (let [s (subs (str/lower-case p) 0 23)] 
   (let [[p1 p2 p3 p4]
         (clojure.string/split s #"-")]
