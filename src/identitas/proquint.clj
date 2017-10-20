@@ -102,11 +102,17 @@ equivalent."
      (str j1 sep j2))))
 
 
+;; ** Prevent-invalid-entry
+(def illegal-char #{"/" "*" "£" "(" ")" "[" "]" "~" "$" "!" "%" "^" "&"
+                    "+" "=" ";" "#" "?" "_" "'" "." "@" ">" "<" ">>"
+                    "<<" "|" "¬" "," ":" "“" "’" "{" "}" "±" "§" "0" "1"
+                    "2" "3" "4" "5" "6" "7" "8" "9"})
 
 (defn proint-to-int [p]
-  (let [s (subs (str/lower-case p) 0 11)]
-    (proint-to-int-1 s 0)))
-
+  (when (some #(str/includes? p (str %)) illegal-char)
+    (throw (IllegalArgumentException.
+            (str "Not a vlaid entry : " p))))
+  (proint-to-int-1 p 0))
 
 (defn short-to-proshort
   "Returns a short proquint."
