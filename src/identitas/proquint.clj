@@ -3,7 +3,7 @@
 equivalent."
       :author "Phillip Lord"}
     identitas.proquint
-  (:require [clojure.string]
+  (:require [clojure.string :as str]
             [identitas.util :as u]
             [primitive.operator.integer :as i]))
 
@@ -101,7 +101,17 @@ equivalent."
          (int-to-proint-1 i1)]
      (str j1 sep j2))))
 
+
+;; ** Prevent-invalid-entry
+(def illegal-char #{"/" "*" "£" "(" ")" "[" "]" "~" "$" "!" "%" "^" "&"
+                    "+" "=" ";" "#" "?" "_" "'" "." "@" ">" "<" ">>"
+                    "<<" "|" "¬" "," ":" "“" "’" "{" "}" "±" "§" "0" "1"
+                    "2" "3" "4" "5" "6" "7" "8" "9"})
+
 (defn proint-to-int [p]
+  (when (some #(str/includes? p (str %)) illegal-char)
+    (throw (IllegalArgumentException.
+            (str "Not a vlaid entry : " p))))
   (proint-to-int-1 p 0))
 
 (defn short-to-proshort
@@ -123,7 +133,8 @@ equivalent."
 The JVM does not actually have a short datatype, so by short, we mean a number
 between 0 and 65535."
   [p]
-  (unchecked-short (proshort-to-short-1 p 0)))
+  (let [s (subs (str/lower-case p) 0 5)]
+  (unchecked-short (proshort-to-short-1 s 0))))
 
 (defn long-to-prolong
   ([l]
@@ -140,11 +151,12 @@ between 0 and 65535."
           (int-to-proint i-little-end sep)))))
 
 (defn prolong-to-long [p]
+  (let [s (subs (str/lower-case p) 0 23)] 
   (let [[p1 p2 p3 p4]
-        (clojure.string/split p #"-")]
+        (clojure.string/split s #"-")]
     (u/integer-to-long
      [(proint-to-int (str p1 "-" p2))
-      (proint-to-int (str p3 "-" p4))])))
+      (proint-to-int (str p3 "-" p4))]))))
 
 
 ;; ** Random Identifiers
