@@ -133,6 +133,9 @@ equivalent."
 (defn proshort-to-short
   "Returns a short given a short proquint."
   [p]
+   (when (some #(str/includes? p (str %)) illegal-char)
+    (throw (IllegalArgumentException.
+            (str "Not a vlaid entry : " p))))
   (let [s (subs (str/lower-case p) 0 5)]
   (unchecked-short (proshort-to-short-1 s 0))))
 
@@ -151,9 +154,13 @@ equivalent."
           sep
           (int-to-proint i-little-end sep)))))
 
+
 (defn prolong-to-long
   "Returns a long given a long proquint."
   [p]
+  (when (some #(str/includes? p (str %)) illegal-char)
+    (throw (IllegalArgumentException.
+            (str "Not a vlaid entry : " p))))
   (let [s (subs (str/lower-case p) 0 23)] 
   (let [[p1 p2 p3 p4]
         (clojure.string/split s #"-")]
