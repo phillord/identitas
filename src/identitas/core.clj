@@ -7,6 +7,7 @@
    Integer/MAX_VALUE 10))
 
 (defn random-damm-proint
+  "Returns a random int proquint after validate it with checksum."
   ([]
    (random-damm-proint "-"))
   ([sep]
@@ -14,6 +15,8 @@
     (d/add-check
      (rand-int max-val-by-10)) sep)))
 
-(defn proint-damm-valid? [ident]
+(defn proint-damm-valid?
+ "Returns a validation of a given int proquint."
+  [ident]
   (d/valid?
    (p/proint-to-int ident)))

@@ -50,6 +50,8 @@
    (* 10 number)
    (check-digit number)))
 
-(defn valid? [number]
+(defn valid?
+  "Returns a boolean given a number"
+  [number]
   (zero?
    (check-digit number)))
