@@ -1,7 +1,7 @@
 (ns
     ^{:doc "Bi-directional Transformation between numbers and a pronouncable
 equivalent."
-      :author "Phillip Lord"}
+      :author "Phillip Lord and Nizal Alshammry"}
     identitas.proquint
   (:require [clojure.string :as str]
             [identitas.util :as u]
@@ -88,6 +88,7 @@ equivalent."
 ;; ** Conversion from and to numbers
 
 (defn int-to-proint
+  "Returns an int proquint given an int"
   ([i]
    (int-to-proint i "-"))
   ([i sep]
@@ -108,14 +109,16 @@ equivalent."
                     "<<" "|" "¬" "," ":" "“" "’" "{" "}" "±" "§" "0" "1"
                     "2" "3" "4" "5" "6" "7" "8" "9"})
 
-(defn proint-to-int [p]
+(defn proint-to-int
+  "Returns a int given a int proquint."
+  [p]
   (when (some #(str/includes? p (str %)) illegal-char)
     (throw (IllegalArgumentException.
             (str "Not a vlaid entry : " p))))
   (proint-to-int-1 p 0))
 
 (defn short-to-proshort
-  "Returns a short proquint."
+  "Returns a short proquint given a short.
   [s]
   (when (not (and (<= Short/MIN_VALUE s)
                   (>= Short/MAX_VALUE s)))
@@ -128,15 +131,13 @@ equivalent."
       j2))
 
 (defn proshort-to-short
-  "Returns a short given a short proquint.
-
-The JVM does not actually have a short datatype, so by short, we mean a number
-between 0 and 65535."
+  "Returns a short given a short proquint."
   [p]
   (let [s (subs (str/lower-case p) 0 5)]
   (unchecked-short (proshort-to-short-1 s 0))))
 
 (defn long-to-prolong
+  "Returns a long proquint given a long."
   ([l]
    (when (not (and (<= Long/MIN_VALUE l)
                    (>= Long/MAX_VALUE l)))
@@ -150,7 +151,9 @@ between 0 and 65535."
           sep
           (int-to-proint i-little-end sep)))))
 
-(defn prolong-to-long [p]
+(defn prolong-to-long
+  "Returns a long given a long proquint."
+  [p]
   (let [s (subs (str/lower-case p) 0 23)] 
   (let [[p1 p2 p3 p4]
         (clojure.string/split s #"-")]
@@ -167,16 +170,19 @@ between 0 and 65535."
   (+ start (int (rand-int (- end start)))))
 
 (defn random-proshort
+  "Return a random short proquint"
   ([]
    (short-to-proshort (ranged-rand -32768 32767))))
 
 (defn random-proint
+  "Return a random int proquint"
   ([]
    (random-proint "-"))
   ([sep]
    (int-to-proint (rand Integer/MIN_VALUE Integer/MAX_VALUE) sep)))
 
 (defn random-prolong
+  "Return a random long proquint"
   ([]
    (random-prolong "-"))
   ([sep]
