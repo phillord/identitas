@@ -186,7 +186,7 @@ equivalent."
   ([]
    (random-proint "-"))
   ([sep]
-   (int-to-proint (rand Integer/MIN_VALUE Integer/MAX_VALUE) sep)))
+   (int-to-proint (unchecked-int (u/rand-range Integer/MIN_VALUE Integer/MAX_VALUE)) sep)))
 
 (defn random-prolong
   "Return a random long proquint"
