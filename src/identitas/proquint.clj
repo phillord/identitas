@@ -188,4 +188,4 @@ equivalent."
   ([]
    (random-prolong "-"))
   ([sep]
-   (long-to-prolong (rand Long/MIN_VALUE Long/MAX_VALUE) sep)))
+   (long-to-prolong (u/rand-range Long/MIN_VALUE Long/MAX_VALUE) sep)))
