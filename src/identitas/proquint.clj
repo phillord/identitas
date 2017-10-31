@@ -171,15 +171,10 @@ equivalent."
 
 ;; ** Random Identifiers
 
-(defn ranged-rand
-  "Returns random int in range start <= rand < end"
-  [start end]
-  (+ start (int (rand-int (- end start)))))
-
 (defn random-proshort
   "Return a random short proquint"
   ([]
-   (short-to-proshort (ranged-rand -32768 32767))))
+   (short-to-proshort (unchecked-short (rand-int (- Short/MAX_VALUE Short/MIN_VALUE))))))
 
 (defn random-proint
   "Return a random int proquint"
