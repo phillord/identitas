@@ -6,6 +6,11 @@
   (unchecked-divide-int
    Integer/MAX_VALUE 10))
 
+(def ^{:private true} min-val-by-10
+  (* -1
+  (unchecked-divide-int
+   Integer/MAX_VALUE 10)))
+
 (defn random-damm-proint
   "Returns a random int proquint after validate it with checksum."
   ([]
@@ -13,7 +18,7 @@
   ([sep]
    (p/int-to-proint
     (d/add-check
-     (rand-int max-val-by-10)) sep)))
+     (unchecked-int (rand-int (- max-val-by-10 min-val-by-10)))) sep)))
 
 (defn proint-damm-valid?
  "Returns a validation of a given int proquint."
