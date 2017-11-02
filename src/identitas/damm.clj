@@ -46,9 +46,10 @@
    (listify number) 0))
 
 (defn add-check [number]
+  (unchecked-int
   (+
    (* 10 number)
-   (check-digit number)))
+   (check-digit number))))
 
 (defn valid?
   "Returns a boolean given a number"
